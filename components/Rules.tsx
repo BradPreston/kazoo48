@@ -32,7 +32,7 @@ function RuleCard({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-3 rounded-md border-2 border-ink bg-white p-6 shadow-[6px_6px_0_0_var(--color-ink)] transition-transform duration-300 hover:-translate-y-1 hover:-rotate-1 hover:shadow-[8px_8px_0_0_var(--color-ink)]">
+    <div className="flex h-full flex-col gap-3 rounded-md border-2 border-ink bg-white p-4 shadow-[6px_6px_0_0_var(--color-ink)] transition-transform duration-300 hover:-translate-y-1 hover:-rotate-1 hover:shadow-[8px_8px_0_0_var(--color-ink)] cursor-default">
       <div className="flex items-center gap-3">
         <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-2 border-secondary text-secondary">
           {icon}
@@ -53,7 +53,7 @@ export default function Rules() {
 
       <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-3">
         {rules.map((rule, index) => (
-          <Reveal key={rule.title} delay={index * 120}>
+          <Reveal key={rule.title} delay={index * 120} className="h-full">
             <RuleCard icon={rule.icon} title={rule.title}>
               {rule.body}
             </RuleCard>
