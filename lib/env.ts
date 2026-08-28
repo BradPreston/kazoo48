@@ -21,6 +21,11 @@ const devDefaults: Record<string, string> = {
   STRIPE_WEBHOOK_SECRET: "whsec_not_configured",
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_test_not_configured",
   REGISTRATION_FEE_CENTS: "5000",
+  // Only signs a per-browser cookie that proves "this browser created
+  // this registration" (see lib/registration-token.ts) — not itself a
+  // credential, but a fixed dev value is still wrong for production, so
+  // it's excluded there like every other default here.
+  REGISTRATION_TOKEN_SECRET: "dev-only-registration-token-secret-do-not-use-in-production",
 };
 
 // process.env values are `string | undefined`; a blank `FOO=` line in
@@ -68,6 +73,9 @@ const envSchema = z.object({
     .number()
     .int()
     .positive("REGISTRATION_FEE_CENTS must be a positive integer"),
+  REGISTRATION_TOKEN_SECRET: z
+    .string()
+    .min(32, "REGISTRATION_TOKEN_SECRET must be at least 32 characters"),
 });
 
 const parsed = envSchema.safeParse(resolved);
