@@ -23,10 +23,10 @@ const submitButtonClassName = `${ctaClassName("primary")} w-full justify-center 
 
 function ConfirmationCard() {
   return (
-    <div className="flex flex-col items-center gap-2 rounded-md border-2 border-ink bg-primary p-8 text-center shadow-[6px_6px_0_0_var(--color-ink)]">
+    <div className="flex flex-col items-center gap-2 rounded-md border-2 border-ink bg-white p-8 text-center shadow-[6px_6px_0_0_var(--color-ink)]">
       <h3 className="text-xl font-bold text-ink">You&apos;re registered!</h3>
       <p className="text-sm text-ink/80">
-        Payment received — we&apos;ll be in touch with next steps.
+        If you have any questions, please <a href="/contact-us" className="font-bold underline">contact us</a>. We&apos;re happy to help!
       </p>
     </div>
   );
