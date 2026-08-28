@@ -29,6 +29,8 @@ export default function Hero() {
           <Image
             src="/images/kazoo48-logo.webp"
             alt="Kazoo 48 Hour Film Festival Logo"
+            fetchPriority="high"
+            loading="eager"
             width={988}
             height={863}
             className="absolute top-1/2 left-1/2 w-1/2 -translate-x-1/2 -translate-y-1/2"
