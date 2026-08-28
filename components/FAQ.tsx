@@ -58,7 +58,7 @@ function FAQItem({
   onToggle: () => void;
 }) {
   return (
-    <div className="rounded-md border-2 border-ink bg-white shadow-[6px_6px_0_0_var(--color-ink)]">
+    <div className="rounded-md border-2 border-ink bg-white shadow-[6px_6px_0_0_var(--color-ink)] transition-shadow duration-300 hover:shadow-[8px_8px_0_0_var(--color-ink)]">
       <button
         type="button"
         onClick={onToggle}

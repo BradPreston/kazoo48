@@ -47,7 +47,7 @@ export default function Premiere() {
 
       <div className="relative flex flex-col items-center gap-1">
         <h3 className="text-xl font-semibold text-ink">Premiere</h3>
-        <div className="relative rounded-md border-2 border-ink bg-white px-6 py-2 text-2xl font-semibold shadow-[4px_4px_0_0_var(--color-ink)]">
+        <div className="relative rounded-md border-2 border-ink bg-white px-6 py-2 text-2xl font-semibold shadow-[4px_4px_0_0_var(--color-ink)] transition-transform duration-300">
           4/23/26
           <span className="absolute -top-6 -left-6 -rotate-12 text-secondary -z-10">
             <Film size={48} />

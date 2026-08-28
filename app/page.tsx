@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import Reveal from "@/components/Reveal";
 import Rules from "@/components/Rules";
 import Filming from "@/components/Filming";
 import Premiere from "@/components/Premiere";
@@ -14,13 +15,27 @@ export default function Home() {
     <div className="flex flex-1 flex-col">
       <Header />
       <Hero />
-      <Rules />
-      <Filming />
-      <Premiere />
-      <History />
-      <Inspiration />
-      <CallToAction />
-      <FAQ />
+      <Reveal>
+        <Rules />
+      </Reveal>
+      <Reveal>
+        <Filming />
+      </Reveal>
+      <Reveal>
+        <Premiere />
+      </Reveal>
+      <Reveal>
+        <History />
+      </Reveal>
+      <Reveal>
+        <Inspiration />
+      </Reveal>
+      <Reveal>
+        <CallToAction />
+      </Reveal>
+      <Reveal>
+        <FAQ />
+      </Reveal>
       <Footer />
     </div>
   );

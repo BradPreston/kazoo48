@@ -98,14 +98,14 @@ export default function Inspiration() {
                   type="button"
                   onClick={() => setActiveVideo(film.youtubeId)}
                   aria-label={`Watch trailer for ${film.title}`}
-                  className="group relative block w-full overflow-hidden rounded-xl border-2 border-ink shadow-[8px_8px_0_0_var(--color-ink)]"
+                  className="group relative block w-full overflow-hidden rounded-xl border-2 border-ink shadow-[8px_8px_0_0_var(--color-ink)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[10px_10px_0_0_var(--color-ink)]"
                 >
                   <Image
                     src={film.poster}
                     alt={film.title}
                     width={228}
                     height={404}
-                    className="h-auto w-full"
+                    className="h-auto w-full transition-transform duration-500 group-hover:scale-110"
                   />
                   <span className="absolute inset-0 flex items-center justify-center bg-ink/0 transition-colors group-hover:bg-ink/40">
                     <Play

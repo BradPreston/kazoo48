@@ -32,7 +32,7 @@ export default function Header() {
           <Link
             key={link.href}
             href={link.href}
-            className="font-semibold text-ink hover:underline"
+            className="relative font-semibold text-ink after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full"
           >
             {link.label}
           </Link>
