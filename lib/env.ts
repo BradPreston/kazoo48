@@ -21,6 +21,9 @@ const devDefaults: Record<string, string> = {
   STRIPE_WEBHOOK_SECRET: "whsec_not_configured",
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_test_not_configured",
   REGISTRATION_FEE_CENTS: "5000",
+  // Evaluated once at module load, so it's fixed for the life of the dev
+  // process — same caveat as every other dev default here.
+  SHOW_YEAR: String(new Date().getFullYear()),
   // Only signs a per-browser cookie that proves "this browser created
   // this registration" (see lib/registration-token.ts) — not itself a
   // credential, but a fixed dev value is still wrong for production, so
@@ -73,6 +76,13 @@ const envSchema = z.object({
     .number()
     .int()
     .positive("REGISTRATION_FEE_CENTS must be a positive integer"),
+  // The show year registrations are locked to — see the unique index on
+  // (email, showYear) in lib/db/schema.ts. Bump this once a year to let
+  // the same emails register again for the new show.
+  SHOW_YEAR: z.coerce
+    .number()
+    .int()
+    .positive("SHOW_YEAR must be a positive integer"),
   REGISTRATION_TOKEN_SECRET: z
     .string()
     .min(32, "REGISTRATION_TOKEN_SECRET must be at least 32 characters"),

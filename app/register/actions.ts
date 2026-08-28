@@ -10,6 +10,7 @@ import {
   verifyRegistrationToken,
 } from "@/lib/registration-token";
 import {
+  DuplicateRegistrationEmailError,
   registrationRepository,
   type Registration,
 } from "@/lib/repositories";
@@ -33,6 +34,12 @@ const PAYMENT_INTENT_RATE_LIMIT = { limit: 20, windowMs: 10 * 60 * 1000 };
 
 const TOO_MANY_ATTEMPTS_MESSAGE =
   "Too many attempts. Please wait a few minutes and try again.";
+
+function duplicateEmailFieldErrors(showYear: number) {
+  return {
+    email: [`This email has already registered for the ${showYear} show.`],
+  };
+}
 
 function readFormValues(formData: FormData): RegistrationFormValues {
   return {
@@ -67,10 +74,36 @@ export async function createRegistration(
     return { status: "error", fieldErrors, values };
   }
 
+  // Friendly path: catches the common case up front so a duplicate signup
+  // never has to round-trip through a DB constraint failure. The insert
+  // below is still guarded (see the catch block) for the race where two
+  // submissions with the same email land concurrently.
+  const existing = await registrationRepository.findByEmailForShowYear(
+    parsed.data.email,
+    env.SHOW_YEAR
+  );
+  if (existing) {
+    return {
+      status: "error",
+      fieldErrors: duplicateEmailFieldErrors(env.SHOW_YEAR),
+      values,
+    };
+  }
+
   let registration: Registration;
   try {
-    registration = await registrationRepository.create(parsed.data);
+    registration = await registrationRepository.create({
+      ...parsed.data,
+      showYear: env.SHOW_YEAR,
+    });
   } catch (error) {
+    if (error instanceof DuplicateRegistrationEmailError) {
+      return {
+        status: "error",
+        fieldErrors: duplicateEmailFieldErrors(env.SHOW_YEAR),
+        values,
+      };
+    }
     console.error("Failed to create registration:", error);
     return {
       status: "error",

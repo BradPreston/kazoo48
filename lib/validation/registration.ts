@@ -3,7 +3,14 @@ import { z } from "zod";
 export const categoryEnum = z.enum(["amateur", "professional"]);
 export type Category = z.infer<typeof categoryEnum>;
 
-const emailField = z.string().trim().pipe(z.email("Enter a valid email"));
+// Lowercased so the show-year duplicate-email lock (registrations table's
+// unique index on email + showYear) can't be bypassed by resubmitting the
+// same address with different casing.
+const emailField = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .pipe(z.email("Enter a valid email"));
 
 /**
  * Single source of truth for the signup form's shape. The server action

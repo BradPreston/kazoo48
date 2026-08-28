@@ -15,3 +15,4 @@ export type {
   NewRegistrationInput,
   Category,
 } from "./registration-repository";
+export { DuplicateRegistrationEmailError } from "./registration-repository";
