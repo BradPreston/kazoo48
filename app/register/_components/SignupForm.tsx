@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { Plus, X } from "lucide-react";
 import SubmitButton from "@/components/SubmitButton";
-import type { CreateRegistrationState } from "../actions";
+import type { CreateRegistrationState } from "../types";
 
 const inputClassName =
   "w-full rounded-md border-2 border-ink bg-white px-4 py-3 text-ink shadow-[3px_3px_0_0_var(--color-ink)] transition-shadow placeholder:text-ink/40 focus:shadow-[5px_5px_0_0_var(--color-ink)] focus:outline-none";

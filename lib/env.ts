@@ -1,5 +1,47 @@
 import { z } from "zod";
 
+const isProduction = process.env.NODE_ENV === "production";
+
+/**
+ * Local/dev-only fallbacks so the app boots — and Step 1's DB write in
+ * particular works — before Stripe/Turso are configured. Never applied in
+ * production: a missing var there fails loudly, on purpose, instead of
+ * silently taking payments against a fake key or writing to a throwaway
+ * local database.
+ *
+ * These are safe to fall back to because nothing here can succeed against
+ * a real service: a placeholder Stripe key just makes any actual Stripe
+ * call fail with a clear 401 (caught and surfaced as a "could not start
+ * payment" error in the UI, not a crash), and a local SQLite file is
+ * exactly what local testing wants.
+ */
+const devDefaults: Record<string, string> = {
+  TURSO_DATABASE_URL: "file:./local.db",
+  STRIPE_SECRET_KEY: "sk_test_not_configured",
+  STRIPE_WEBHOOK_SECRET: "whsec_not_configured",
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_test_not_configured",
+  REGISTRATION_FEE_CENTS: "5000",
+};
+
+// process.env values are `string | undefined`; a blank `FOO=` line in
+// .env parses to `""`, which should behave like "not set" too.
+const resolved: Record<string, string | undefined> = { ...process.env };
+const usingDefaults: string[] = [];
+
+if (!isProduction) {
+  for (const [key, fallback] of Object.entries(devDefaults)) {
+    if (!resolved[key]) {
+      resolved[key] = fallback;
+      usingDefaults.push(key);
+    }
+  }
+  if (usingDefaults.length > 0) {
+    console.warn(
+      `[env] Using local dev defaults for: ${usingDefaults.join(", ")}. Set real values in .env before testing Stripe payments or a real Turso database.`
+    );
+  }
+}
+
 /**
  * Validated environment variables. Import from here instead of reading
  * `process.env` directly so a missing/malformed value fails fast with a
@@ -8,7 +50,13 @@ import { z } from "zod";
  */
 const envSchema = z.object({
   TURSO_DATABASE_URL: z.string().min(1, "TURSO_DATABASE_URL is required"),
-  TURSO_AUTH_TOKEN: z.string().min(1, "TURSO_AUTH_TOKEN is required"),
+  // Only meaningful for a remote (libsql://) TURSO_DATABASE_URL; a local
+  // `file:` database needs no auth token. A blank `.env` line normalizes
+  // to undefined rather than "".
+  TURSO_AUTH_TOKEN: z
+    .string()
+    .optional()
+    .transform((value) => (value ? value : undefined)),
   STRIPE_SECRET_KEY: z.string().min(1, "STRIPE_SECRET_KEY is required"),
   STRIPE_WEBHOOK_SECRET: z
     .string()
@@ -22,14 +70,14 @@ const envSchema = z.object({
     .positive("REGISTRATION_FEE_CENTS must be a positive integer"),
 });
 
-const parsed = envSchema.safeParse(process.env);
+const parsed = envSchema.safeParse(resolved);
 
 if (!parsed.success) {
   const issues = parsed.error.issues
     .map((issue) => `  - ${issue.path.join(".")}: ${issue.message}`)
     .join("\n");
   throw new Error(
-    `Invalid environment variables. Check your .env.local against .env.example:\n${issues}`
+    `Invalid environment variables. Check your .env against .env.example:\n${issues}`
   );
 }
 

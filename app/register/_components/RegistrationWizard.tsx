@@ -5,8 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   createPaymentIntentForRegistration,
   createRegistration,
-  initialCreateRegistrationState,
 } from "../actions";
+import { initialCreateRegistrationState } from "../types";
 import PaymentForm from "./PaymentForm";
 import SignupForm from "./SignupForm";
 import StepIndicator from "./StepIndicator";
