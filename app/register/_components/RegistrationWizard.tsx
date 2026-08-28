@@ -100,53 +100,55 @@ export default function RegistrationWizard() {
   const resumeError = resume.status === "error" ? resume.message : null;
 
   return (
-    <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-8 px-6 py-16">
-      <div className="flex flex-col items-center gap-3 text-center">
+    <>
+      <div className="order-1 flex flex-col items-center gap-3 text-center lg:col-span-2">
         <StepIndicator step={step} />
         <h1 className="text-3xl font-bold text-ink sm:text-4xl">
           Register your team
         </h1>
       </div>
 
-      {step === 1 && <SignupForm state={state} formAction={formAction} />}
+      <div className="order-3 flex w-full flex-col items-center gap-8 lg:order-2">
+        {step === 1 && <SignupForm state={state} formAction={formAction} />}
 
-      {step === 2 && (
-        <>
-          {alreadyPaid && (
-            <InfoCard>
-              <h3 className="text-xl font-bold text-ink">
-                You&apos;re already registered!
-              </h3>
-              <p className="mt-2 text-sm text-ink/70">
-                We&apos;ve already received payment for this registration.
-              </p>
-            </InfoCard>
-          )}
+        {step === 2 && (
+          <>
+            {alreadyPaid && (
+              <InfoCard>
+                <h3 className="text-xl font-bold text-ink">
+                  You&apos;re already registered!
+                </h3>
+                <p className="mt-2 text-sm text-ink/70">
+                  We&apos;ve already received payment for this registration.
+                </p>
+              </InfoCard>
+            )}
 
-          {!alreadyPaid && !resumeError && !clientSecret && (
-            <InfoCard>
-              <p className="text-sm text-ink/70">Preparing payment…</p>
-            </InfoCard>
-          )}
+            {!alreadyPaid && !resumeError && !clientSecret && (
+              <InfoCard>
+                <p className="text-sm text-ink/70">Preparing payment…</p>
+              </InfoCard>
+            )}
 
-          {resumeError && (
-            <InfoCard>
-              <p className="text-sm text-red-700">{resumeError}</p>
-              <button
-                type="button"
-                onClick={() => setResume({ status: "idle" })}
-                className="mt-4 text-sm font-semibold text-ink underline decoration-2 underline-offset-4 hover:text-primary"
-              >
-                Try again
-              </button>
-            </InfoCard>
-          )}
+            {resumeError && (
+              <InfoCard>
+                <p className="text-sm text-red-700">{resumeError}</p>
+                <button
+                  type="button"
+                  onClick={() => setResume({ status: "idle" })}
+                  className="mt-4 text-sm font-semibold text-ink underline decoration-2 underline-offset-4 hover:text-primary"
+                >
+                  Try again
+                </button>
+              </InfoCard>
+            )}
 
-          {!alreadyPaid && !resumeError && clientSecret && (
-            <PaymentForm clientSecret={clientSecret} />
-          )}
-        </>
-      )}
-    </section>
+            {!alreadyPaid && !resumeError && clientSecret && (
+              <PaymentForm clientSecret={clientSecret} />
+            )}
+          </>
+        )}
+      </div>
+    </>
   );
 }
