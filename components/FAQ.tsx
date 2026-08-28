@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import Highlight from "./Highlight";
+import JsonLd from "./JsonLd";
 
 const faqs = [
   {
@@ -31,6 +32,19 @@ const faqs = [
       "We'd love to see you there! The premiere is a celebration of everyone's hard work, but if you can't make it, we'll make sure your film is still shown.",
   },
 ];
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+};
 
 function FAQItem({
   question,
@@ -78,6 +92,7 @@ export default function FAQ() {
 
   return (
     <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-10 px-6 py-16">
+      <JsonLd data={faqJsonLd} />
       <h2 className="text-center text-2xl font-semibold text-ink">
         Got <Highlight>questions</Highlight>?
       </h2>
