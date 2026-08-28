@@ -6,6 +6,7 @@ import Premiere from "@/components/Premiere";
 import History from "@/components/History";
 import Inspiration from "@/components/Inspiration";
 import CallToAction from "@/components/CallToAction";
+import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -19,6 +20,7 @@ export default function Home() {
       <History />
       <Inspiration />
       <CallToAction />
+      <FAQ />
       <Footer />
     </div>
   );
