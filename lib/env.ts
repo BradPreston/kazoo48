@@ -29,6 +29,11 @@ const devDefaults: Record<string, string> = {
   // credential, but a fixed dev value is still wrong for production, so
   // it's excluded there like every other default here.
   REGISTRATION_TOKEN_SECRET: "dev-only-registration-token-secret-do-not-use-in-production",
+  // Same reasoning as the Stripe keys above: a fake Postmark token just
+  // makes any real send fail with a caught, logged error instead of a crash.
+  POSTMARK_API_KEY: "postmark-not-configured",
+  POSTMARK_FROM_EMAIL: "dev@example.com",
+  REGISTRATION_NOTIFICATION_EMAILS: "dev@example.com",
 };
 
 // process.env values are `string | undefined`; a blank `FOO=` line in
@@ -86,6 +91,45 @@ const envSchema = z.object({
   REGISTRATION_TOKEN_SECRET: z
     .string()
     .min(32, "REGISTRATION_TOKEN_SECRET must be at least 32 characters"),
+  POSTMARK_API_KEY: z.string().min(1, "POSTMARK_API_KEY is required"),
+  POSTMARK_FROM_EMAIL: z
+    .string()
+    .email("POSTMARK_FROM_EMAIL must be a valid email"),
+  // Comma-separated list of staff addresses notified when a registration is
+  // paid (see lib/email/notify-registration.ts). Validated eagerly, same as
+  // every other var here, so a typo'd address in .env fails loudly at
+  // startup instead of surfacing as a silent Postmark rejection later.
+  REGISTRATION_NOTIFICATION_EMAILS: z
+    .string()
+    .min(1, "REGISTRATION_NOTIFICATION_EMAILS is required")
+    .transform((value, ctx) => {
+      const emails = value
+        .split(",")
+        .map((email) => email.trim())
+        .filter((email) => email.length > 0);
+
+      if (emails.length === 0) {
+        ctx.addIssue({
+          code: "custom",
+          message: "REGISTRATION_NOTIFICATION_EMAILS must contain at least one email",
+        });
+        return z.NEVER;
+      }
+
+      const emailSchema = z.string().email();
+      for (const email of emails) {
+        const result = emailSchema.safeParse(email);
+        if (!result.success) {
+          ctx.addIssue({
+            code: "custom",
+            message: `REGISTRATION_NOTIFICATION_EMAILS contains an invalid email: "${email}"`,
+          });
+          return z.NEVER;
+        }
+      }
+
+      return emails;
+    }),
 });
 
 const parsed = envSchema.safeParse(resolved);

@@ -1,5 +1,6 @@
 import type Stripe from "stripe";
 import { env } from "@/lib/env";
+import { sendRegistrationNotification } from "@/lib/email/notify-registration";
 import { registrationRepository } from "@/lib/repositories";
 import { stripe } from "@/lib/stripe/client";
 
@@ -35,9 +36,15 @@ export async function POST(request: Request) {
     try {
       // Idempotent by construction — Stripe redelivers events at-least-once,
       // and setting `paid = true` twice is harmless.
-      await registrationRepository.markPaidByPaymentIntentId(
+      const registration = await registrationRepository.markPaidByPaymentIntentId(
         paymentIntent.id
       );
+      if (registration) {
+        // Notifies staff, not the payer — errors are caught/logged inside
+        // this call, so a Postmark hiccup never turns a successfully
+        // recorded payment into a 500 (and an unnecessary Stripe retry).
+        await sendRegistrationNotification(registration);
+      }
     } catch (error) {
       console.error("Failed to mark registration as paid:", error);
       // Non-2xx tells Stripe to retry delivery.

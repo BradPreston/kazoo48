@@ -19,6 +19,7 @@
     "drizzle-orm": "^0.45.2",
     "lucide-react": "^1.34.0",
     "next": "16.3.3",
+    "postmark": "^5.1.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "stripe": "^22.6.0",
