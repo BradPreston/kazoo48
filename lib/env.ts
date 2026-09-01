@@ -76,9 +76,9 @@ const envSchema = z.object({
     .number()
     .int()
     .positive("REGISTRATION_FEE_CENTS must be a positive integer"),
-  // The show year registrations are locked to — see the unique index on
-  // (email, showYear) in lib/db/schema.ts. Bump this once a year to let
-  // the same emails register again for the new show.
+  // The show year new registrations are tagged with (see the `showYear`
+  // column in lib/db/schema.ts), so registrations can be filtered/reported
+  // on by year. Bump this once a year ahead of opening registration.
   SHOW_YEAR: z.coerce
     .number()
     .int()

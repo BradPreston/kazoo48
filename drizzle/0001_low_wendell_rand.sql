@@ -1,0 +1,1 @@
+ALTER TABLE `registrations` ADD `show_year` integer NOT NULL;
