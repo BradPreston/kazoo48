@@ -8,56 +8,48 @@ import Highlight from "./Highlight";
 const films = [
   {
     title: "Check-In",
-    poster: "",
     youtubeId: "SxOol4Pi7LM",
     year: 2026,
     award: "Best Amateur Picture"
   },
   {
     title: "Poker Night",
-    poster: "",
     youtubeId: "1Fq3Y-zbo24",
     year: 2026,
     award: "Best Use of Character"
   },
   {
     title: "Operation: Pomme De Terre",
-    poster: "",
     youtubeId: "MANIdVHTYEM",
     year: 2025,
     award: "Best Amateur Picture"
   },
   {
     title: "Shotgun",
-    poster: "",
     youtubeId: "fZXKASYVSX8",
     year: 2025,
     award: "Best Use of Prop"
   },
   {
     title: "The Best of Us",
-    poster: "/images/the-best-of-us.png",
     youtubeId: "I2Cl2sW0-Do",
     year: 2024,
     award: "Best Professional Picture"
   },
   {
     title: "Motherboard Loves You",
-    poster: "/images/motherboard-loves-you.png",
     youtubeId: "F5tC3_6t5cs",
     year: 2024,
     award: "Best Amateur Picture"
   },
   {
     title: "The Omelette",
-    poster: "",
     youtubeId: "62BqmnHfgK4",
     year: 2023,
     award: "Best Amateur Picture",
   },
   {
     title: "Choosing Eden",
-    poster: "/images/choosing-eden.png",
     youtubeId: "1nNSpeESGTI",
     year: 2019,
     award: "Best Professional Picture"
