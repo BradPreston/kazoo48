@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Play, X } from "lucide-react";
 import Highlight from "./Highlight";
 
@@ -108,33 +109,35 @@ export default function Inspiration() {
         ))}
       </div>
 
-      {activeVideo && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
-          onClick={() => setActiveVideo(null)}
-        >
+      {activeVideo &&
+        createPortal(
           <div
-            className="relative aspect-video w-full max-w-2xl"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
+            onClick={() => setActiveVideo(null)}
           >
-            <button
-              type="button"
-              aria-label="Close"
-              onClick={() => setActiveVideo(null)}
-              className="absolute -top-10 right-0 text-white"
+            <div
+              className="relative aspect-video w-full max-w-2xl"
+              onClick={(e) => e.stopPropagation()}
             >
-              <X size={28} />
-            </button>
-            <iframe
-              className="h-full w-full rounded-md"
-              src={`https://www.youtube.com/embed/${activeVideo}?autoplay=1&rel=0`}
-              title="Film trailer"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-        </div>
-      )}
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => setActiveVideo(null)}
+                className="absolute -top-10 right-0 text-white"
+              >
+                <X size={28} />
+              </button>
+              <iframe
+                className="h-full w-full rounded-md"
+                src={`https://www.youtube.com/embed/${activeVideo}?autoplay=1&rel=0`}
+                title="Film trailer"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>,
+          document.body,
+        )}
     </section>
   );
 }
