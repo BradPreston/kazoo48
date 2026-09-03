@@ -3,7 +3,7 @@ import Button from "./Button";
 
 export default function History() {
   return (
-    <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 px-6 py-16 text-center">
+    <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 px-6 py-16 text-left">
       <h2 className="text-2xl font-semibold text-ink">
         How about a little <Highlight>history</Highlight>!
       </h2>
