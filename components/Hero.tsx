@@ -17,7 +17,7 @@ export default function Hero() {
       </div>
 
       <div className="-skew-x-2 order-1 md:order-2">
-        <div className="relative aspect-square overflow-hidden rounded-xl border-2 border-ink shadow-[8px_8px_0_0_var(--color-ink)]">
+        <div className="relative aspect-square overflow-hidden rounded-xl border-2 bg-ink border-ink shadow-[8px_8px_0_0_var(--color-ink)]">
           <video
             className="h-full w-full object-cover brightness-75"
             src="/images/kazoo48-event.webm"
