@@ -36,7 +36,7 @@ export default function FestivalInfo() {
   const entryCost = currencyFormatter.format(env.REGISTRATION_FEE_CENTS / 100);
 
   return (
-    <aside className="order-2 flex w-full flex-col gap-6 rounded-md border-2 max-w-xl mx-auto border-ink bg-white p-6 shadow-[6px_6px_0_0_var(--color-ink)] lg:sticky lg:top-8 lg:order-3 lg:col-start-2">
+    <aside className="order-2 flex w-full flex-col gap-6 max-w-xl rounded-md border-2 mx-auto border-ink bg-white p-6 shadow-[6px_6px_0_0_var(--color-ink)] lg:sticky lg:top-8 lg:order-3 lg:col-start-2">
       <h2 className="text-xl font-bold text-ink">Festival Details</h2>
 
       <dl className="flex flex-col gap-4">

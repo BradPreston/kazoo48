@@ -46,7 +46,7 @@ export default function ContactForm({
   return (
     <form
       action={formAction}
-      className="flex w-full max-w-xl flex-col gap-8 rounded-md border-2 border-ink bg-white p-8 shadow-[6px_6px_0_0_var(--color-ink)]"
+      className="flex w-full flex-col gap-8 rounded-md border-2 border-ink bg-white p-8 shadow-[6px_6px_0_0_var(--color-ink)]"
     >
       {state.status === "error" && state.formError && (
         <p className="rounded-md border-2 border-red-600 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
@@ -54,7 +54,7 @@ export default function ContactForm({
         </p>
       )}
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 md:grid md:grid-cols-2">
         <Field
           label="Name"
           name="name"
@@ -68,7 +68,7 @@ export default function ContactForm({
           autoComplete="email"
           errors={fieldErrors.email}
         />
-        <label className="flex flex-col gap-2">
+        <label className="flex flex-col gap-2 md:col-span-2">
           <span className="text-sm font-semibold text-ink">Message</span>
           <textarea
             name="message"

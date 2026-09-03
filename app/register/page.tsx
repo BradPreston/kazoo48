@@ -27,7 +27,7 @@ export default function RegisterPage() {
   return (
     <div className="flex flex-1 flex-col">
       <Header />
-      <section className="mx-auto grid w-full max-w-6xl gap-10 px-6 py-16 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+      <section className="mx-auto grid w-full max-w-4xl gap-5 px-6 pb-16 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
         <Suspense fallback={<RegistrationWizardFallback />}>
           <RegistrationWizard />
         </Suspense>
