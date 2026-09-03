@@ -38,6 +38,10 @@ const faqs = [
   {
     question: "Will my entry be shown on the big screen?",
     answer: "We really hope so! We get a TON of entries every year and do our best to show all of the entries. However, due to the volume of entries, we cannot guarantee that yours will be shown."
+  },
+  {
+    question: "Who is considered a professional entry?",
+    answer: "Anyone who made at least $1,500 on film-related projects within the last year. If you're comfortable enough to charge, you're a West Michigan pro!"
   }
 ];
 
