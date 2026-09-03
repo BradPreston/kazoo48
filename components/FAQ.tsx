@@ -14,7 +14,7 @@ const faqs = [
   {
     question: "How much does it cost to enter?",
     answer:
-      "Entry details and pricing are covered on the registration page. Keep an eye out for early registration discounts!",
+      "It's a $25 entry fee to commpete. The price is the same for both amateur and professional entries!",
   },
   {
     question: "What equipment do I need?",
@@ -27,10 +27,18 @@ const faqs = [
       "Categories are revealed at kickoff, right when your 48-hour clock starts. That's the fun part!",
   },
   {
-    question: "Do I have to premiere in person?",
+    question: "Where is the show premiered?",
     answer:
-      "We'd love to see you there! The premiere is a celebration of everyone's hard work, but if you can't make it, we'll make sure your film is still shown.",
+      "We show the festival at the GQT Kalamazoo 10. The address is 820 Maple Hill Dr. Kalamazoo, MI 49009. We can't wait to see you there!",
   },
+  {
+    question: "Are you associated with the International 48 Hour Film Festival?",
+    answer: "Nope, we are 100% independent."
+  },
+  {
+    question: "Will my entry be shown on the big screen?",
+    answer: "We really hope so! We get a TON of entries every year and do our best to show all of the entries. However, due to the volume of entries, we cannot guarantee that yours will be shown."
+  }
 ];
 
 const faqJsonLd = {

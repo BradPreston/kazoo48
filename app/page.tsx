@@ -28,13 +28,13 @@ export default function Home() {
         <History />
       </Reveal>
       <Reveal>
+        <FAQ />
+      </Reveal>
+      <Reveal>
         <Inspiration />
       </Reveal>
       <Reveal>
         <CallToAction />
-      </Reveal>
-      <Reveal>
-        <FAQ />
       </Reveal>
       <Footer />
     </div>
