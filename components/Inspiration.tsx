@@ -2,64 +2,71 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Play, X } from "lucide-react";
+import { Play, X } from "lucide-react";
 import Highlight from "./Highlight";
 
 const films = [
   {
+    title: "Check-In",
+    poster: "",
+    youtubeId: "SxOol4Pi7LM",
+    year: 2026,
+    award: "Best Amateur Picture"
+  },
+  {
+    title: "Poker Night",
+    poster: "",
+    youtubeId: "1Fq3Y-zbo24",
+    year: 2026,
+    award: "Best Use of Character"
+  },
+  {
+    title: "Operation: Pomme De Terre",
+    poster: "",
+    youtubeId: "MANIdVHTYEM",
+    year: 2025,
+    award: "Best Amateur Picture"
+  },
+  {
+    title: "Shotgun",
+    poster: "",
+    youtubeId: "fZXKASYVSX8",
+    year: 2025,
+    award: "Best Use of Prop"
+  },
+  {
     title: "The Best of Us",
     poster: "/images/the-best-of-us.png",
     youtubeId: "I2Cl2sW0-Do",
-  },
-  {
-    title: "Royal Flush",
-    poster: "/images/royal-flush.png",
-    youtubeId: "kPLfh1-S6D0",
+    year: 2024,
+    award: "Best Professional Picture"
   },
   {
     title: "Motherboard Loves You",
     poster: "/images/motherboard-loves-you.png",
     youtubeId: "F5tC3_6t5cs",
+    year: 2024,
+    award: "Best Amateur Picture"
+  },
+  {
+    title: "The Omelette",
+    poster: "",
+    youtubeId: "62BqmnHfgK4",
+    year: 2023,
+    award: "Best Amateur Picture",
   },
   {
     title: "Choosing Eden",
     poster: "/images/choosing-eden.png",
     youtubeId: "1nNSpeESGTI",
+    year: 2019,
+    award: "Best Professional Picture"
   },
+  
 ];
 
-function useSlidesToShow() {
-  const [slides, setSlides] = useState(1);
-
-  useEffect(() => {
-    const update = () => {
-      if (window.innerWidth >= 1024) setSlides(3);
-      else if (window.innerWidth >= 640) setSlides(2);
-      else setSlides(1);
-    };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-
-  return slides;
-}
-
 export default function Inspiration() {
-  const slidesToShow = useSlidesToShow();
-  const maxIndex = Math.max(films.length - slidesToShow, 0);
-  const [rawIndex, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
-  const index = Math.min(rawIndex, maxIndex);
-
-  useEffect(() => {
-    if (paused || activeVideo) return;
-    const id = setInterval(() => {
-      setIndex((i) => (i >= maxIndex ? 0 : i + 1));
-    }, 5000);
-    return () => clearInterval(id);
-  }, [paused, activeVideo, maxIndex]);
 
   useEffect(() => {
     if (!activeVideo) return;
@@ -70,93 +77,44 @@ export default function Inspiration() {
     return () => window.removeEventListener("keydown", onKey);
   }, [activeVideo]);
 
-  const itemWidth = 100 / slidesToShow;
-
   return (
-    <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-10 px-6 py-16">
+    <section className="mx-auto flex w-full max-w-5xl flex-col items-center gap-10 px-6 py-16">
       <h2 className="text-center text-2xl font-semibold text-ink">
         Looking for some <Highlight>inspiration</Highlight>?
       </h2>
 
-      <div
-        className="relative w-full"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-      >
-        <div className="overflow-hidden">
-          <div
-            className="flex transition-transform duration-500 ease-out"
-            style={{ transform: `translateX(-${index * itemWidth}%)` }}
-          >
-            {films.map((film) => (
-              <div
-                key={film.title}
-                className="shrink-0 px-2"
-                style={{ width: `${itemWidth}%` }}
-              >
-                <button
-                  type="button"
-                  onClick={() => setActiveVideo(film.youtubeId)}
-                  aria-label={`Watch trailer for ${film.title}`}
-                  className="group relative block w-full overflow-hidden rounded-xl border-2 border-ink shadow-[8px_8px_0_0_var(--color-ink)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[10px_10px_0_0_var(--color-ink)]"
-                >
-                  <Image
-                    src={film.poster}
-                    alt={film.title}
-                    width={228}
-                    height={404}
-                    className="h-auto w-full transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <span className="absolute inset-0 flex items-center justify-center bg-ink/0 transition-colors group-hover:bg-ink/40">
-                    <Play
-                      size={48}
-                      className="text-white opacity-0 transition-opacity group-hover:opacity-100"
-                      fill="currentColor"
-                    />
-                  </span>
-                </button>
+      <div className="grid w-full grid-cols-2 gap-8 md:grid-cols-4">
+        {films.map((film) => (
+          <div className="relative" key={film.title}>
+            <span className="absolute text-sm font-bold -top-2 -right-4 rotate-4 py-0 px-1 bg-secondary z-20 rounded border-2 border-ink">{film.award}</span>
+            <button
+              type="button"
+              onClick={() => setActiveVideo(film.youtubeId)}
+              aria-label={`Watch trailer for ${film.title}`}
+              className="group relative block w-full overflow-hidden rounded-xl border-2 border-ink shadow-[8px_8px_0_0_var(--color-ink)] transition-all duration-300 hover:shadow-[10px_10px_0_0_var(--color-ink)]"
+            >
+              <Image
+                src={`https://i.ytimg.com/vi/${film.youtubeId}/mqdefault.jpg`}
+                alt={film.title}
+                width={228}
+                height={404}
+                className="h-auto w-full aspect-2/3 object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <span className="absolute inset-0 flex items-center justify-center bg-ink/0 transition-colors group-hover:bg-ink/40">
+                <Play
+                  size={48}
+                  className="text-white opacity-0 transition-opacity group-hover:opacity-100"
+                  fill="currentColor"
+                />
+              </span>
+              <div className="absolute bottom-0 left-0 bg-white text-left px-2 pb-1 rounded-lg border-ink border-2">
+                <strong className="text-sm">{film.title}</strong>
+                <p className="text-sm">{film.year}</p>
               </div>
-            ))}
+            </button>
           </div>
-        </div>
-
-        {maxIndex > 0 && (
-          <>
-            <button
-              type="button"
-              aria-label="Previous"
-              onClick={() => setIndex((i) => (i === 0 ? maxIndex : i - 1))}
-              className="absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-ink bg-primary p-2 shadow-[3px_3px_0_0_var(--color-ink)]"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              type="button"
-              aria-label="Next"
-              onClick={() => setIndex((i) => (i === maxIndex ? 0 : i + 1))}
-              className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 rounded-md border-2 border-ink bg-primary p-2 shadow-[3px_3px_0_0_var(--color-ink)]"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </>
-        )}
+        ))}
       </div>
-
-      {maxIndex > 0 && (
-        <div className="flex gap-2">
-          {Array.from({ length: maxIndex + 1 }).map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              aria-label={`Go to slide ${i + 1}`}
-              onClick={() => setIndex(i)}
-              className={`h-2.5 w-2.5 rounded-full border border-ink ${
-                i === index ? "bg-ink" : "bg-white"
-              }`}
-            />
-          ))}
-        </div>
-      )}
 
       {activeVideo && (
         <div
