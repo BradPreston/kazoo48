@@ -51,3 +51,22 @@ export const registrations = sqliteTable("registrations", {
 
 export type RegistrationRow = typeof registrations.$inferSelect;
 export type NewRegistrationRow = typeof registrations.$inferInsert;
+
+export const contactSubmissions = sqliteTable("contact_submissions", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  message: text("message").notNull(),
+
+  // Write-once inquiries — nothing here is ever edited after submission, so
+  // unlike `registrations` there's no `updatedAt` to keep in sync.
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .default(sql`(unixepoch())`),
+});
+
+export type ContactSubmissionRow = typeof contactSubmissions.$inferSelect;
+export type NewContactSubmissionRow = typeof contactSubmissions.$inferInsert;
