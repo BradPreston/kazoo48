@@ -12,7 +12,7 @@ export default function ContactUsPage() {
   return (
     <div className="flex flex-1 flex-col">
       <Header />
-      <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-10 px-6 py-16">
+      <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-10 px-6 pb-16">
         <h1 className="text-3xl font-bold text-ink sm:text-4xl">
           Contact us
         </h1>
