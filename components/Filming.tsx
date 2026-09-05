@@ -43,7 +43,7 @@ export default function Filming() {
           <DateBadge
             icon={<PlayCircle size={48} />}
             label="Start"
-            date="3/27/26"
+            date="TBD"
             rotate="left"
           />
         </Reveal>
@@ -51,7 +51,7 @@ export default function Filming() {
           <DateBadge
             icon={<StopCircle size={48} />}
             label="Finish"
-            date="3/29/26"
+            date="TBD"
             rotate="left"
           />
         </Reveal>
