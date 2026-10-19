@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { PlayCircle, StopCircle } from "lucide-react";
 import Highlight from "./Highlight";
 import Reveal from "./Reveal";
+import { eventConfig } from "@/lib/event-config";
 
 function DateBadge({
   icon,
@@ -43,7 +44,7 @@ export default function Filming() {
           <DateBadge
             icon={<PlayCircle size={48} />}
             label="Start"
-            date="TBD"
+            date={eventConfig.isScheduled ? eventConfig.filming.start : "TBD"}
             rotate="left"
           />
         </Reveal>
@@ -51,7 +52,7 @@ export default function Filming() {
           <DateBadge
             icon={<StopCircle size={48} />}
             label="Finish"
-            date="TBD"
+            date={eventConfig.isScheduled ? eventConfig.filming.finish : "TBD"}
             rotate="left"
           />
         </Reveal>
