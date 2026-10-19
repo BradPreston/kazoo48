@@ -34,6 +34,9 @@ const devDefaults: Record<string, string> = {
   POSTMARK_API_KEY: "postmark-not-configured",
   POSTMARK_FROM_EMAIL: "dev@example.com",
   REGISTRATION_NOTIFICATION_EMAILS: "dev@example.com",
+  // Bearer token for internal admin endpoints (e.g. resending a contact
+  // notification). Fine as a fixed value locally; excluded in production.
+  ADMIN_API_KEY: "dev-only-admin-api-key-do-not-use-in-production",
 };
 
 // process.env values are `string | undefined`; a blank `FOO=` line in
@@ -130,6 +133,11 @@ const envSchema = z.object({
 
       return emails;
     }),
+  // Required as `Authorization: Bearer <key>` on internal admin endpoints
+  // such as app/api/contact-submissions/resend/route.ts.
+  ADMIN_API_KEY: z
+    .string()
+    .min(32, "ADMIN_API_KEY must be at least 32 characters"),
 });
 
 const parsed = envSchema.safeParse(resolved);

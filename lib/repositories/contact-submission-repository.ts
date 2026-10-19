@@ -20,4 +20,5 @@ export type ContactSubmission = {
  */
 export interface ContactSubmissionRepository {
   create(input: NewContactSubmissionInput): Promise<ContactSubmission>;
+  findById(id: string): Promise<ContactSubmission | null>;
 }

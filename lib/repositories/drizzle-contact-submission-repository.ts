@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import type { db as Db } from "@/lib/db/client";
 import { contactSubmissions, type ContactSubmissionRow } from "@/lib/db/schema";
 import type {
@@ -32,5 +33,12 @@ export class DrizzleContactSubmissionRepository
       .returning();
 
     return toContactSubmission(row);
+  }
+
+  async findById(id: string): Promise<ContactSubmission | null> {
+    const row = await this.db.query.contactSubmissions.findFirst({
+      where: eq(contactSubmissions.id, id),
+    });
+    return row ? toContactSubmission(row) : null;
   }
 }
