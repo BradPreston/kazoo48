@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { sendContactNotification } from "@/lib/email/notify-contact";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { verifyRecaptcha } from "@/lib/recaptcha";
 import { contactSubmissionRepository } from "@/lib/repositories";
 import { contactSchema } from "@/lib/validation/contact";
 import type { ContactFormValues, CreateContactState } from "./types";
@@ -28,6 +29,8 @@ export async function submitContact(
   formData: FormData
 ): Promise<CreateContactState> {
   const values = readFormValues(formData);
+  // Set by ContactWizard just before submit (see lib/recaptcha.client.ts).
+  const recaptchaToken = String(formData.get("recaptchaToken") ?? "");
 
   const { allowed } = await checkRateLimit("submit-contact", CONTACT_RATE_LIMIT);
   if (!allowed) {
@@ -46,6 +49,23 @@ export async function submitContact(
   }
 
   try {
+    // Checked before the DB write so likely bots never reach the table or
+    // staff inboxes.
+    const recaptchaResult = await verifyRecaptcha(recaptchaToken);
+    if (!recaptchaResult.success) {
+      console.warn(
+        "reCAPTCHA rejected contact submission:",
+        recaptchaResult.error,
+        recaptchaResult.score
+      );
+      return {
+        status: "error",
+        formError: "Security verification failed. Please try again.",
+        fieldErrors: {},
+        values,
+      };
+    }
+
     const submission = await contactSubmissionRepository.create(parsed.data);
     // Fired after the DB write succeeds so a failed notification email
     // never loses a submission that was already saved.

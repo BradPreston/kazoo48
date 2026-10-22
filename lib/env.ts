@@ -37,6 +37,13 @@ const devDefaults: Record<string, string> = {
   // Bearer token for internal admin endpoints (e.g. resending a contact
   // notification). Fine as a fixed value locally; excluded in production.
   ADMIN_API_KEY: "dev-only-admin-api-key-do-not-use-in-production",
+  // Unlike the Stripe placeholders, a fake reCAPTCHA secret would make every
+  // contact submission fail verification, so verifyRecaptcha skips the check
+  // entirely while this default is in use (see usingDevDefault below). The
+  // site key default only satisfies the schema — the browser reads the real
+  // NEXT_PUBLIC_ var directly and skips fetching a token when it's unset.
+  NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY: "recaptcha-site-key-not-configured",
+  RECAPTCHA_V3_SECRET_KEY: "dev-only-recaptcha-secret-key-do-not-use-in-production",
 };
 
 // process.env values are `string | undefined`; a blank `FOO=` line in
@@ -138,6 +145,13 @@ const envSchema = z.object({
   ADMIN_API_KEY: z
     .string()
     .min(32, "ADMIN_API_KEY must be at least 32 characters"),
+  // Google reCAPTCHA v3 keys for the contact form (see lib/recaptcha.ts).
+  NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY: z
+    .string()
+    .min(1, "NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY is required"),
+  RECAPTCHA_V3_SECRET_KEY: z
+    .string()
+    .min(1, "RECAPTCHA_V3_SECRET_KEY is required"),
 });
 
 const parsed = envSchema.safeParse(resolved);
@@ -152,3 +166,11 @@ if (!parsed.success) {
 }
 
 export const env = parsed.data;
+
+/**
+ * Whether `key` fell back to its local dev default. Always false in
+ * production, where defaults are never applied.
+ */
+export function usingDevDefault(key: keyof typeof env): boolean {
+  return usingDefaults.includes(key);
+}

@@ -10,20 +10,27 @@ const isDev = process.env.NODE_ENV === "development";
 //
 // Allowances beyond the doc's baseline, and why each is needed:
 //   - script-src https://js.stripe.com   Stripe.js, loaded by PaymentForm
+//   - script-src https://www.google.com/recaptcha/ / www.gstatic.com/recaptcha/
+//                                        reCAPTCHA v3 on the contact form
 //   - style-src 'unsafe-inline'          inline `style={{...}}` (Reveal, Inspiration)
 //   - connect-src https://api.stripe.com Stripe Elements calls this directly from the browser
+//   - connect-src https://www.google.com/recaptcha/   reCAPTCHA v3's api.js fetches from the page itself
 //   - frame-src   https://js.stripe.com / hooks.stripe.com   Payment Element + 3DS challenge iframes
 //   - frame-src   https://www.youtube.com   trailer embeds (Inspiration)
+//   - frame-src   https://www.google.com/recaptcha/ / recaptcha.google.com/recaptcha/
+//                                        reCAPTCHA v3 runs its check in a hidden iframe
 // font-src/img-src stay at 'self' — next/font self-hosts Inter at build time
 // and every image is local (no next.config `images.remotePatterns` either).
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline' https://js.stripe.com${isDev ? " 'unsafe-eval'" : ""};
+  script-src 'self' 'unsafe-inline' https://js.stripe.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/${isDev ? " 'unsafe-eval'" : ""};
   style-src 'self' 'unsafe-inline';
   img-src 'self' blob: data:;
   font-src 'self';
-  connect-src 'self' https://api.stripe.com;
-  frame-src https://js.stripe.com https://hooks.stripe.com https://www.youtube.com;
+  connect-src 'self' https://api.stripe.com https://www.google.com/recaptcha/;
+  script-src ... https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/;
+  frame-src  ... https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/;
+  frame-src https://js.stripe.com https://hooks.stripe.com https://www.youtube.com https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/;
   object-src 'none';
   base-uri 'self';
   form-action 'self';
@@ -57,6 +64,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  allowedDevOrigins: ['77d2-2601-406-0-f89-ec39-971d-ba49-aab9.ngrok-free.app'],
   images: {
     remotePatterns: [
       {

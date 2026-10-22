@@ -1,13 +1,38 @@
 "use client";
 
 import { useActionState } from "react";
+import { getRecaptchaToken } from "@/lib/recaptcha.client";
 import { submitContact } from "../actions";
-import { initialCreateContactState } from "../types";
+import { type CreateContactState, initialCreateContactState } from "../types";
 import ContactForm from "./ContactForm";
 
 export default function ContactWizard() {
   const [state, formAction] = useActionState(
-    submitContact,
+    // Fetches the reCAPTCHA token inside the action (rather than in an
+    // onSubmit handler) so SubmitButton's pending state covers it and every
+    // resubmit gets a fresh single-use token.
+    async (
+      prevState: CreateContactState,
+      formData: FormData
+    ): Promise<CreateContactState> => {
+      try {
+        formData.set("recaptchaToken", await getRecaptchaToken("contact_form"));
+      } catch (error) {
+        console.error("Failed to get reCAPTCHA token:", error);
+        return {
+          status: "error",
+          formError:
+            "Security check couldn't load. Please refresh and try again.",
+          fieldErrors: {},
+          values: {
+            name: String(formData.get("name") ?? ""),
+            email: String(formData.get("email") ?? ""),
+            message: String(formData.get("message") ?? ""),
+          },
+        };
+      }
+      return submitContact(prevState, formData);
+    },
     initialCreateContactState
   );
 
