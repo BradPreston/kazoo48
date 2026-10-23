@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type Metadata from "next";
 import Script from "next/script";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
