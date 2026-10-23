@@ -11,6 +11,7 @@ import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 
 export default function Home() {
+  console.log("feature branch");
   return (
     <div className="flex flex-1 flex-col">
       <Header />
