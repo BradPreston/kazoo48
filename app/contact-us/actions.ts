@@ -1,5 +1,6 @@
 "use server";
 
+import { after } from "next/server";
 import { z } from "zod";
 import { sendContactNotification } from "@/lib/email/notify-contact";
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -85,8 +86,10 @@ export async function submitContact(
 
     const submission = await contactSubmissionRepository.create(parsed.data);
     // Fired after the DB write succeeds so a failed notification email
-    // never loses a submission that was already saved.
-    await sendContactNotification(submission);
+    // never loses a submission that was already saved — and via after() so
+    // the visitor sees "Message sent!" without waiting on Postmark. It
+    // swallows its own errors, and the resend endpoint covers a lost email.
+    after(() => sendContactNotification(submission));
   } catch (error) {
     console.error("Failed to save contact submission:", error);
     return {
