@@ -14,7 +14,7 @@ const faqs = [
   {
     question: "How much does it cost to enter?",
     answer:
-      "It's a $25 entry fee to commpete. The price is the same for both amateur and professional entries!",
+      "It's a $25 entry fee to compete. The price is the same for both amateur and professional entries!",
   },
   {
     question: "What equipment do I need?",
