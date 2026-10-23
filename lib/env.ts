@@ -44,6 +44,10 @@ const devDefaults: Record<string, string> = {
   // NEXT_PUBLIC_ var directly and skips fetching a token when it's unset.
   NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY: "recaptcha-site-key-not-configured",
   RECAPTCHA_V3_SECRET_KEY: "dev-only-recaptcha-secret-key-do-not-use-in-production",
+  // Only consumed by withSentryConfig (next.config.ts) to upload source maps
+  // during `next build`, which reads process.env directly — so this
+  // placeholder never reaches the plugin; it just satisfies the schema.
+  SENTRY_AUTH_TOKEN: "sentry-auth-token-not-configured",
 };
 
 // process.env values are `string | undefined`; a blank `FOO=` line in
@@ -152,6 +156,12 @@ const envSchema = z.object({
   RECAPTCHA_V3_SECRET_KEY: z
     .string()
     .min(1, "RECAPTCHA_V3_SECRET_KEY is required"),
+  // Lets the Sentry build plugin upload source maps. Without it a production
+  // build still succeeds but ships errors with unreadable minified stack
+  // traces, so it's required here to fail loudly instead. This module is
+  // evaluated during `next build` (e.g. via register/_components/FestivalInfo),
+  // so a missing token fails the build, not just the first request.
+  SENTRY_AUTH_TOKEN: z.string().min(1, "SENTRY_AUTH_TOKEN is required"),
 });
 
 const parsed = envSchema.safeParse(resolved);
