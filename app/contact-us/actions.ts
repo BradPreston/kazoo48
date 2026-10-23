@@ -5,6 +5,7 @@ import { sendContactNotification } from "@/lib/email/notify-contact";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { verifyRecaptcha } from "@/lib/recaptcha";
 import { contactSubmissionRepository } from "@/lib/repositories";
+import { detectContactSpam, HONEYPOT_FIELD } from "@/lib/spam";
 import { contactSchema } from "@/lib/validation/contact";
 import type { ContactFormValues, CreateContactState } from "./types";
 
@@ -64,6 +65,22 @@ export async function submitContact(
         fieldErrors: {},
         values,
       };
+    }
+
+    // Checked after reCAPTCHA so the log shows what score the bot got.
+    // Answers with a fake success so the bot gets no signal to adapt to.
+    const spamReason = detectContactSpam(
+      parsed.data,
+      String(formData.get(HONEYPOT_FIELD) ?? "")
+    );
+    if (spamReason) {
+      console.warn(
+        "Dropped spam contact submission:",
+        spamReason,
+        "reCAPTCHA score",
+        recaptchaResult.score
+      );
+      return { status: "success" };
     }
 
     const submission = await contactSubmissionRepository.create(parsed.data);

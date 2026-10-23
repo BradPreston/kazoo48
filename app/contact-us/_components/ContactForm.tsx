@@ -82,6 +82,19 @@ export default function ContactForm({
         </label>
       </div>
 
+      {/* Honeypot (see lib/spam.ts): moved offscreen rather than
+          display:none, since some bots skip hidden inputs. Hidden from
+          screen readers and the tab order so real people never fill it. */}
+      <div
+        aria-hidden="true"
+        className="absolute left-[-10000px] h-px w-px overflow-hidden"
+      >
+        <label>
+          Website
+          <input type="text" name="website" tabIndex={-1} autoComplete="off" />
+        </label>
+      </div>
+
       <SubmitButton>Send message</SubmitButton>
     </form>
   );
