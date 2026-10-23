@@ -1,10 +1,24 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useActionState } from "react";
 import { getRecaptchaToken } from "@/lib/recaptcha.client";
+import { CONTACT_FORM_SENTRY_TAGS } from "@/lib/sentry";
 import { submitContact } from "../actions";
-import { type CreateContactState, initialCreateContactState } from "../types";
+import {
+  type ContactFormValues,
+  type CreateContactState,
+  initialCreateContactState,
+} from "../types";
 import ContactForm from "./ContactForm";
+
+function readFormValues(formData: FormData): ContactFormValues {
+  return {
+    name: String(formData.get("name") ?? ""),
+    email: String(formData.get("email") ?? ""),
+    message: String(formData.get("message") ?? ""),
+  };
+}
 
 export default function ContactWizard() {
   const [state, formAction] = useActionState(
@@ -19,19 +33,32 @@ export default function ContactWizard() {
         formData.set("recaptchaToken", await getRecaptchaToken("contact_form"));
       } catch (error) {
         console.error("Failed to get reCAPTCHA token:", error);
+        Sentry.captureException(error, { tags: CONTACT_FORM_SENTRY_TAGS });
         return {
           status: "error",
           formError:
             "Security check couldn't load. Please refresh and try again.",
           fieldErrors: {},
-          values: {
-            name: String(formData.get("name") ?? ""),
-            email: String(formData.get("email") ?? ""),
-            message: String(formData.get("message") ?? ""),
-          },
+          values: readFormValues(formData),
         };
       }
-      return submitContact(prevState, formData);
+
+      // submitContact returns its own errors as state, so this only catches
+      // the call itself failing (network drop, server crash), which would
+      // otherwise escape to the error boundary and replace the whole page.
+      try {
+        return await submitContact(prevState, formData);
+      } catch (error) {
+        console.error("Contact form submission failed:", error);
+        Sentry.captureException(error, { tags: CONTACT_FORM_SENTRY_TAGS });
+        return {
+          status: "error",
+          formError:
+            "Something went wrong sending your message. Please try again.",
+          fieldErrors: {},
+          values: readFormValues(formData),
+        };
+      }
     },
     initialCreateContactState
   );

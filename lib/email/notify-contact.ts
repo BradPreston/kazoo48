@@ -1,5 +1,7 @@
+import * as Sentry from "@sentry/nextjs";
 import { env } from "@/lib/env";
 import type { ContactSubmission } from "@/lib/repositories";
+import { CONTACT_FORM_SENTRY_TAGS } from "@/lib/sentry";
 import { postmarkClient } from "./client";
 
 /**
@@ -47,5 +49,10 @@ export async function sendContactNotification(
     await deliverContactNotification(submission);
   } catch (error) {
     console.error("Failed to send contact notification email:", error);
+    // The id is what the resend endpoint takes to retry this email.
+    Sentry.captureException(error, {
+      tags: CONTACT_FORM_SENTRY_TAGS,
+      extra: { submissionId: submission.id },
+    });
   }
 }
