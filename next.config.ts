@@ -1,5 +1,5 @@
 import { withSentryConfig } from "@sentry/nextjs/config";
-import type { NextConfig } from "next";
+import type NextConfig from "next";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -16,10 +16,13 @@ const isDev = process.env.NODE_ENV === "development";
 //   - style-src 'unsafe-inline'          inline `style={{...}}` (Reveal, Inspiration)
 //   - connect-src https://api.stripe.com Stripe Elements calls this directly from the browser
 //   - connect-src https://www.google.com/recaptcha/   reCAPTCHA v3's api.js fetches from the page itself
+//   - worker-src  blob:                  Sentry Replay spins up its compression worker from a blob URL
 //   - frame-src   https://js.stripe.com / hooks.stripe.com   Payment Element + 3DS challenge iframes
 //   - frame-src   https://www.youtube.com   trailer embeds (Inspiration)
 //   - frame-src   https://www.google.com/recaptcha/ / recaptcha.google.com/recaptcha/
 //                                        reCAPTCHA v3 runs its check in a hidden iframe
+// Sentry needs no connect-src entry: browser events go through the
+// same-origin `tunnelRoute` set in withSentryConfig below.
 // font-src/img-src stay at 'self' — next/font self-hosts Inter at build time
 // and every image is local (no next.config `images.remotePatterns` either).
 const cspHeader = `
@@ -29,8 +32,7 @@ const cspHeader = `
   img-src 'self' blob: data:;
   font-src 'self';
   connect-src 'self' https://api.stripe.com https://www.google.com/recaptcha/;
-  script-src ... https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/;
-  frame-src  ... https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/;
+  worker-src 'self' blob:;
   frame-src https://js.stripe.com https://hooks.stripe.com https://www.youtube.com https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/;
   object-src 'none';
   base-uri 'self';
@@ -97,7 +99,8 @@ export default withSentryConfig(nextConfig, {
   // This can increase your server load as well as your hosting bill.
   // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
   // side errors will fail.
-  // tunnelRoute: "/monitoring",
+  // Also keeps Sentry under connect-src 'self' — see the CSP note above.
+  tunnelRoute: "/monitoring",
 
   webpack: {
     // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
